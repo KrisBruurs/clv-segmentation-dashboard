@@ -1,13 +1,17 @@
-import pandas as pd
-import requests
-import zipfile
-import io
+import kagglehub
+import shutil
+import os
 from pathlib import Path
+import glob
 
 Path("data").mkdir(exist_ok=True)
 
-url = "https://absentdata.com/wp-content/uploads/2024/08/customer_zip_data.zip"
+path = kagglehub.dataset_download("mashlyn/online-retail-ii-uci")
 
-req = requests.get(url)
-zip = zipfile.ZipFile(io.BytesIO(req.content))
-zip.extractall("data")
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.join(script_dir, "data")
+dest_path = os.path.join(data_dir, "customer_data.csv")
+
+csv_files = glob.glob(os.path.join(path, "*.csv"))
+shutil.copy(csv_files[0], dest_path)
+print(f"Saved to {dest_path}")
